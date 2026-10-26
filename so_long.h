@@ -15,14 +15,35 @@
 
 # include "lib/libft/libft.h"
 # include "lib/printf/ft_printf.h"
-# include "lib/mlx/mlx.h"
+# include "lib/mlx_linux/mlx.h"
+# include "lib/mlx_mac/mlx.h"
 # include <stdlib.h>
 # include <string.h>
 # include <fcntl.h>
+#ifdef __APPLE__
+# define KEY_ESC 53
+# define KEY_W 13
+# define KEY_A 0
+# define KEY_S 1
+# define KEY_D 2
+# define KEY_UP 126
+# define KEY_DOWN 125
+# define KEY_LEFT 123
+# define KEY_RIGHT 124
+#else
 # include <X11/keysym.h>
-# include <X11/cursorfont.h>
+# include <X11/X.h>
+# define KEY_ESC XK_Escape
+# define KEY_W XK_w
+# define KEY_A XK_a
+# define KEY_S XK_s
+# define KEY_D XK_d
+# define KEY_UP XK_Up
+# define KEY_DOWN XK_Down
+# define KEY_LEFT XK_Left
+# define KEY_RIGHT XK_Right
+#endif
 
-// typedef struct s_game s_game;
 
 typedef struct s_image
 {
@@ -42,6 +63,7 @@ typedef struct s_game
 	int		exit_x;
 	int		exit_y;
 	int		exit;
+	int		stop;
 	int		finish;
 	int		collectible;
 	int		tab_x_len;
@@ -106,7 +128,7 @@ char	*frame_win(int i);
 //LOSE_GAME
 void	game_over(t_game *game);
 int		lost_over(t_game *game);
-void	walk_in_trap(t_game *game, int x, int y);
+int		walk_in_trap(t_game *game);
 char	*frame_lost(int i);
 char	*frame_trap(int i);
 //UTILS

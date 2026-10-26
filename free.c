@@ -28,7 +28,10 @@ void	tab_free(char **tab)
 void	free_exit(t_game *game)
 {
 	mlx_destroy_window(game->mlx, game->window);
-	mlx_destroy_display(game->mlx);
+	// mlx_destroy_display(game->mlx);
 	free(game->mlx);
 	tab_free(game->map_tab);
+	#ifndef __APPLE__
+	mlx_destroy_display(game->mlx);
+	#endif
 }

@@ -14,9 +14,8 @@
 
 void	p_move(int keycode, t_game *game)
 {
-	void	*img;
-
-	img = NULL;
+	if (game->stop == 1)
+		return ;
 	if ((keycode == 1) && (game->map_tab[game->p_position_y - 1]
 			[game->p_position_x] != '1'))
 		up_move(game);

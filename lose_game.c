@@ -36,47 +36,57 @@ void	game_over(t_game *game)
 
 int	lost_over(t_game *game)
 {
-	int		i;
+	static int		lostframe_i = 1;
+	static int time = 0;
 	char	*frame;
 	int		x;
 	int		y;
 
-	i = 1;
+	if (time++ < 2400)
+		return (0);
+	time = 0;
+	if (lostframe_i > 5)
+	{
+		destroy(game, 1);
+		return (0);
+	}
 	img_disp(game->p_position_x, game->p_position_y,
 		"sprites/0_ground/ground.xpm", game);
-	while (i <= 4)
-	{
-		x = (game->tab_x_len / 2) - 1;
-		y = (game->tab_y_len / 2) - 1;
-		frame = frame_lost(i);
-		img_disp(x, y, frame, game);
-		free(frame);
-		delay();
-		i++;
-	}
-	destroy(game, 1);
+
+	x = (game->tab_x_len / 2) - 1;
+	y = (game->tab_y_len / 2) - 1;
+	frame = frame_lost(lostframe_i);
+	img_disp(x, y, frame, game);
+	lostframe_i++;
+	free(frame);
 	return (0);
 }
 
-void	walk_in_trap(t_game *game, int x, int y)
+int	walk_in_trap(t_game *game)
 {
-	int		i;
+	static int	trap_i = 1;
+	static int	time_trap = 0;
 	char	*img;
 
-	i = 1;
-	img_disp(x, y, "sprites/0_ground/ground.xpm", game);
-	while (i < 6)
+	if (time_trap++ < 2000)
+		return (0);
+	time_trap = 0;
+	if (trap_i > 5)
 	{
-		img_disp(x, y, "sprites/0_ground/ground.xpm", game);
-		img_and_transp(game, "sprites/p_wolf/wolf_r.xpm", y, x);
-		img = frame_trap(i);
-		img_and_transp(game, img, y, x);
-		free(img);
-		delay();
-		img_disp(x, y, "sprites/0_ground/ground.xpm", game);
-		i++;
+		game_over(game);
+		return (0);
 	}
-	game_over(game);
+	img_disp(game->p_position_x, game->p_position_y, "sprites/0_ground/ground.xpm", game);
+	img_and_transp(game, "sprites/p_wolf/wolf_r.xpm", game->p_position_y, game->p_position_x);
+	img = frame_trap(trap_i);
+	img_and_transp(game, img, game->p_position_y, game->p_position_x);
+	if (img)
+	{
+		img_and_transp(game, img, game->p_position_y, game->p_position_x);
+		free(img);
+	}
+	trap_i++;
+	return (0);
 }
 
 char	*frame_lost(int i)
@@ -91,6 +101,8 @@ char	*frame_lost(int i)
 	else if (i == 3)
 		frame = ft_strdup("sprites/game_over/frame3.xpm");
 	else if (i == 4)
+		frame = ft_strdup("sprites/game_over/frame4.xpm");
+	else if (i == 5)
 		frame = ft_strdup("sprites/game_over/frame4.xpm");
 	return (frame);
 }

@@ -14,6 +14,18 @@
 
 int	click_act(int keycode, t_game *game)
 {
+	#ifdef __APPLE__
+		if (keycode == 53)
+			destroy(game, 3);
+		else if (keycode == 13 || keycode == 126)
+			p_move(1, game);
+		else if (keycode == 1 || keycode == 125)
+			p_move(-1, game);
+		else if (keycode == 2 || keycode == 124)
+			p_move(2, game);
+		else if (keycode == 0 || keycode == 123)
+			p_move(-2, game);
+	#endif
 	if (keycode == 65307)
 		destroy(game, 3);
 	else if (keycode == 119 || keycode == 65362)
@@ -38,28 +50,25 @@ int	destroy(t_game *game, int message)
 
 void	move_trap(t_game *game, int x_init, int y_init, int move)
 {
+	game->stop = 1;
 	if (move == 1)
 	{
 		img_and_transp(game, "sprites/0_ground/ground.xpm", y_init, x_init);
-		game->p_position_y--;
-		walk_in_trap(game, game->p_position_x, game->p_position_y);
+		mlx_loop_hook(game->mlx, walk_in_trap, game) ;
 	}
 	if (move == -1)
 	{
 		img_and_transp(game, "sprites/0_ground/ground.xpm", y_init, x_init);
-		game->p_position_y++;
-		walk_in_trap(game, game->p_position_x, game->p_position_y);
+		mlx_loop_hook(game->mlx, walk_in_trap, game) ;
 	}
 	if (move == 2)
 	{
 		img_and_transp(game, "sprites/0_ground/ground.xpm", y_init, x_init);
-		game->p_position_x++;
-		walk_in_trap(game, game->p_position_x, game->p_position_y);
+		mlx_loop_hook(game->mlx, walk_in_trap, game) ;
 	}
 	if (move == -2)
 	{
 		img_and_transp(game, "sprites/0_ground/ground.xpm", y_init, x_init);
-		game->p_position_x--;
-		walk_in_trap(game, game->p_position_x, game->p_position_y);
+		mlx_loop_hook(game->mlx, walk_in_trap, game) ;
 	}
 }

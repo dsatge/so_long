@@ -36,23 +36,23 @@ void	win_over(t_game *game)
 
 int	win_animation(t_game *game)
 {
-	int		i;
+	static int frame_i = 1;
+	static int timer = 0;
 	char	*frame;
 	int		x;
 	int		y;
 
-	i = 1;
-	while (i <= 8)
-	{
-		x = (game->tab_x_len / 2) - 1;
-		y = (game->tab_y_len / 2) - 1;
-		frame = frame_win(i);
-		img_disp(x, y, frame, game);
-		free(frame);
-		delay();
-		i++;
-	}
-	destroy(game, 0);
+	if (timer++ < 2000)
+		return (0);
+	timer = 0;
+	if (frame_i > 12)
+		destroy(game, 0);
+	x = (game->tab_x_len / 2) - 1;
+	y = (game->tab_y_len / 2) - 1;
+	frame = frame_win(frame_i);
+	img_disp(x, y, frame, game);
+	frame_i++;
+	free(frame);
 	return (0);
 }
 
@@ -76,6 +76,14 @@ char	*frame_win(int i)
 	else if (i == 7)
 		frame = ft_strdup("sprites/you_won/frame3.xpm");
 	else if (i == 8)
+		frame = ft_strdup("sprites/you_won/frame4.xpm");
+	else if (i == 9)
+		frame = ft_strdup("sprites/you_won/frame1.xpm");
+	else if (i == 10)
+		frame = ft_strdup("sprites/you_won/frame2.xpm");
+	else if (i == 11)
+		frame = ft_strdup("sprites/you_won/frame3.xpm");
+	else if (i == 12)
 		frame = ft_strdup("sprites/you_won/frame4.xpm");
 	return (frame);
 }

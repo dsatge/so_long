@@ -34,9 +34,14 @@ int	arg_check(char *arg)
 	i = 3;
 	len = ft_strlen(arg) - 1;
 	format = ".ber";
-	fd = open(arg, __O_DIRECTORY);
-	if (fd != -1)
-		error_exit("Error: map directory not file\n");
+	fd = open(arg, O_RDONLY);
+	if (fd < 0)
+		error_exit("Error: Cannot open file\n");
+	if (read(fd, NULL, 0) < 0)
+	{
+		close(fd);
+		error_exit ("Is a directory or unreadable");
+	}
 	while (i > 0)
 	{
 		if (arg[len] != format[i])
@@ -63,7 +68,8 @@ int	main(int argc, char **argv)
 	if (!map)
 		error_exit("Error: failur in map creation\n");
 	valid_map(map, &game);
-	game.step_count = 999999996;
+	game.step_count = 0;
+	game.stop = 0;
 	game.mlx = mlx_init();
 	if (game.mlx == 0)
 		error_exit("Error: mlx_init failur\n");

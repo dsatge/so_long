@@ -40,12 +40,10 @@ int	len_tab(char **map)
 int	in_border(char **map, t_game *game)
 {
 	int	i;
-	int	j;
 	int	len;
 	int	wide;
 
 	i = 0;
-	j = 0;
 	wide = len_tab(map) - 1;
 	game->tab_x_len = wide;
 	len = ft_count_line_split(map) - 1;
