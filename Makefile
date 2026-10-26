@@ -12,8 +12,6 @@
 
 NAME = so_long
 
-NAME_BONUS = so_long_bonus
-
 C_FILES = main.c\
 	  valid_size_map.c\
 	  error_parsing.c\
@@ -23,54 +21,64 @@ C_FILES = main.c\
 	  win_game.c\
 	  lose_game.c\
 	  utils.c\
-	  free.c
+	  free.c\
+	  valid_map_bonus.c\
+	  map_doable_bonus.c\
+	  graphic_interface_bonus.c
 
-C_FILES_SIMP = valid_map.c\
-		map_doable.c\
-		graphic_interface.c
 
-C_FILES_BONUS = valid_map_bonus.c\
-		map_doable_bonus.c\
-		graphic_interface_bonus.c
+UNAME_S = $(shell uname -s)
 
-FLAGS = -Wall -Werror -Wextra -I includes/ -g
+ifeq ($(UNAME_S), Darwin)
+	MLX = lib/mlx_mac
+	MLX_A = $(MLX)/libmlx.a
+	LIBFT = lib/libft/libft.a
+	PRINTF = lib/printf/libftprintf.a
+	MLXFLAG = -L$(MLX) -lmlx -framework OpenGL -framework AppKit
 
-LIB = libft/libft.a printf/libftprintf.a mlx/libmlx.a
+else ifeq ($(UNAME_S), Linux)
+	MLX = lib/mlx_linux
+	MLX_A = $(MLX)/libmlx.a
+	LIBFT = lib/libft/libft.a
+	PRINTF = lib/printf/libftprintf.a
+	MLXFLAG =  -L$(MLX) -lmlx -lXext -lX11 -lm -lz
 
-DEPS = $(addprefix lib/,${LIB:%.c=%.o})
+else
+	$(error OS non supporte : $(UNAME_S). Utilisez macOS ou Linux / WSL.)
+endif
 
-simple: ${NAME}
+CC = cc
 
-${NAME} : ${C_FILES} ${C_FILES_SIMP}
-	make -C lib/mlx
-	make -C lib/libft
-	make -C lib/printf
-	cc ${FLAGS} ${C_FILES} ${C_FILES_SIMP} -L lib/mlx -l mlx -I mlx -lXext -lX11 -lm -lz -o ${NAME} ${DEPS}
+CFLAGS = -Wall -Werror -Wextra -Iincludes -isystem $(MLX)
 
-bonus: ${NAME_BONUS}
+OBJS = $(C_FILES:.c=.o)
 
-${NAME_BONUS} : ${C_FILES} ${C_FILES_BONUS}
-	make -C lib/mlx
-	make -C lib/libft
-	make -C lib/printf
-	cc ${FLAGS} ${C_FILES} ${C_FILES_BONUS} -L lib/mlx -l mlx -I mlx -lXext -lX11 -lm -lz -o ${NAME_BONUS} ${DEPS}
+$(LIBFT):
+	$(MAKE) -C lib/libft
+
+$(PRINTF):
+	$(MAKE) -C lib/printf
+
+$(MLX_A):
+	$(MAKE) -C $(MLX) > /dev/null 2>&1
+
+all: ${NAME}
+
+${NAME} : ${OBJS} ${MLX_A} ${LIBFT} ${PRINTF}
+	${CC} ${OBJS} ${LIBFT} ${PRINTF} ${MLX_A} ${MLXFLAG} ${CFLAGS} -o ${NAME}
 
 clean:
-	make -C lib/mlx clean
+	make -C ${MLX} clean
 	make -C lib/libft clean
 	make -C lib/printf clean
+	rm -f ${OBJS}
 
 fclean: clean
-	rm -rf ${NAME}
-	rm -rf ${NAME_BONUS}
-
-fcleansimp: clean
-	rm -rf ${NAME}
-
-fcleanbonus: clean
-	rm -rf ${NAME_BONUS}
+	$(MAKE) -C lib/libft fclean
+	$(MAKE) -C lib/printf fclean
+	rm -f ${NAME}
 
 re:	fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re $(LIBFT) $(PRINTF) $(MLX_A)
 
