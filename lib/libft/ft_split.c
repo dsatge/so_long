@@ -97,14 +97,10 @@ static char	**write_word(char const *s, char c, char **tab)
 
 char	**ft_split(char const *s, char c)
 {
-	size_t	i;
-	size_t	j;
 	char	**tab;
 
 	if (!s)
 		return (NULL);
-	i = 0;
-	j = 0;
 	tab = malloc((sizeof(char *)) * (wordcount(s, c) + 1));
 	if (!tab)
 		return (NULL);

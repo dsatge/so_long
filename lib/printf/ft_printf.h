@@ -12,13 +12,19 @@
 
 #ifndef FT_PRINTF_H
 # define FT_PRINTF_H
-# include <bsd/string.h>
+
+#ifdef __linux__
+	# include <bsd/string.h>
+#else
+	# include <string.h>
+# endif
 # include <ctype.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
 # include <unistd.h>
 # include <stdint.h>
+# include <stdarg.h>
 
 unsigned int	ft_putunnbr(unsigned int n);
 int				ft_putstr(char *s);

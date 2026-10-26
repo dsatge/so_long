@@ -12,7 +12,11 @@
 
 #ifndef LIBFT_H
 # define LIBFT_H
-# include <bsd/string.h>
+#ifdef __linux__
+	# include <bsd/string.h>
+#else
+	# include <string.h>
+#endif
 # include <ctype.h>
 # include <stdio.h>
 # include <stdlib.h>
